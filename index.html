@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- CSS STYLING -->
+    <style>
+      body {
+        background-color: darkslategray;
+      }
+      h1 {
+        text-align: center;
+        color: white;
+      }
+      .cell {
+        color: white;
+      }
+      .my_flex {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div><h1>0 = Dead & 1 = Live</h1></div>
+    <div style="text-align: center">
+      <input
+        id="my_input"
+        type="number"
+        placeholder="Input The Number To Create The Cell"
+        style="padding: 2px; min-width: 300px"
+      />
+      <button id="my_btn" type="button">Click Me</button>
+    </div>
+
+    <div class="my_flex">
+      <div id="root"></div>
+    </div>
+
+    <!-- JAVASCRIPT CODE -->
+
+    <script>
+      // Targeting the html element"
+      let mainDiv = document.getElementById("root");
+      let myInput = document.getElementById("my_input");
+      let myBtn = document.getElementById("my_btn");
+
+      let inputNum = "";
+
+      // Adding Event Listner To Get The Value FROM The User
+      myBtn.addEventListener("click", () => {
+        inputNum = myInput.value;
+        // Chexking The Input Value
+        if (inputNum <= 100 && inputNum >= 3) {
+          let intialArray = [];
+          for (let i = 0; i < inputNum; i++) {
+            intialArray[i] = [];
+            for (let j = 0; j < inputNum; j++) {
+              intialArray[i][j] = Math.floor(Math.random() * 2);
+            }
+          }
+
+          // Adding TimeInterval At Each 1 sec
+          const interval = setInterval(() => {
+            // Getting The Previous Generation
+            const newArray = [...intialArray];
+            for (let i = 0; i < inputNum; i++) {
+              for (let j = 0; j < inputNum; j++) {
+                let sum = 0;
+                let selfValue = newArray[i][j];
+                if (
+                  i == 0 ||
+                  i == inputNum - 1 ||
+                  j == 0 ||
+                  j == inputNum - 1
+                ) {
+                } else {
+                  sum += intialArray[i - 1][j - 1];
+                  sum += intialArray[i - 1][j + 1];
+                  sum += intialArray[i - 1][j];
+                  sum += intialArray[i][j - 1];
+                  sum += intialArray[i][j + 1];
+                  sum += intialArray[i + 1][j - 1];
+                  sum += intialArray[i + 1][j];
+                  sum += intialArray[i + 1][j + 1];
+                }
+
+                // Checking The Condition For Dead Or Alive
+                if (selfValue == 0 && sum == 3) {
+                  newArray[i][j] = 1;
+                } else if (selfValue == 1 && (sum < 2 || sum > 3)) {
+                  newArray[i][j] = 0;
+                } else {
+                  newArray[i][j] = selfValue;
+                }
+              }
+            }
+            // Displaying The Output Output
+            mainDiv.innerHTML = "";
+            for (let i = 0; i < inputNum; i++) {
+              for (let j = 0; j < inputNum; j++) {
+                mainDiv.innerHTML += `<span class="cell" style="border:2px solid black;padding:2px;display:inline-block ">${newArray[i][j]}</span>`;
+              }
+              mainDiv.innerHTML += "</br>";
+            }
+
+            // Replacing The Previous Generation With New Generation
+            intialArray = [...newArray];
+          }, 1000);
+        } else {
+          mainDiv.innerText =
+            "Number Should Be Greater Than Or Equal To 3 and and Less Than Or Equal To 100";
+        }
+      });
+    </script>
+  </body>
+</html>
